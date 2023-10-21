@@ -3,6 +3,7 @@ import { ModelLoader } from '../models/ModelLoader';
 import { AmbientLight } from '../lights/Ambient';
 import { DirectionalLight } from '../lights/Directional';
 import { RainbowRays } from '../fx/RainbowRais';
+import { DiagonalGradientBackground } from '../Background';
 
 export class MainScene {
     private scene: THREE.Scene;
@@ -12,14 +13,20 @@ export class MainScene {
     private modelLoader: ModelLoader;
     private rainbowRays: RainbowRays;
     private mousePosition = { x: 0, y: 0 };
+    private background: DiagonalGradientBackground;
 
     constructor() {
         this.scene = new THREE.Scene();
+
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 5;
+
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setClearColor(0x000000, 0);
+
         document.body.appendChild(this.renderer.domElement);
+
         this.modelLoader = new ModelLoader();
         this.init();
 
@@ -47,6 +54,7 @@ export class MainScene {
         });
         this.scene.add(new AmbientLight());
         this.scene.add(new DirectionalLight());
+        this.background = new DiagonalGradientBackground(this.scene);
         this.animate();
     }
 
