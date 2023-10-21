@@ -53,13 +53,6 @@ export class MainScene {
     private animate() {
         requestAnimationFrame(() => this.animate());
 
-        // Automove
-        // if (this.model) {
-        //     this.model.rotation.x += 0.01;
-        //     this.model.rotation.y += 0.01;
-        // }
-
-        // Mousemove
         if (this.model) {
             this.model.rotation.x = this.mousePosition.y * Math.PI * 0.5;
             this.model.rotation.y = this.mousePosition.x * Math.PI * 0.5;
