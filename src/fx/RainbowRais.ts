@@ -25,7 +25,7 @@ export class RainbowRays {
     private init() {
         const rainbowColors = [
             0xFF0000, 0xFF7F00, 0xFFFF00, 0x00FF00, 0x0000FF, 0x4B0082, 0x9400D3
-        ].map(color => dimColor(color, 0.5));
+        ].map(color => dimColor(color, 0.8));
 
 
         for (let i = 0; i < this.numRays; i++) {

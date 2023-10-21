@@ -19,11 +19,10 @@ export class MainScene {
         this.scene = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.z = 5;
+        this.camera.position.z = 10;
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setClearColor(0x000000, 0);
 
         document.body.appendChild(this.renderer.domElement);
 
