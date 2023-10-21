@@ -1,5 +1,3 @@
-// DiagonalGradientBackground.ts
-
 import * as THREE from 'three';
 
 export class DiagonalGradientBackground {
