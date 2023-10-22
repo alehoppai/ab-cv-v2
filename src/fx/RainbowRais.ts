@@ -24,7 +24,7 @@ export class RainbowRays {
   private init() {
     const rainbowColors = [
       0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x0000ff, 0x4b0082, 0x9400d3,
-    ].map((color) => dimColor(color, 0.2));
+    ].map((color) => dimColor(color, 0.3));
 
     for (let i = 0; i < this.numRays; i++) {
       const angle = (i / this.numRays) * 2 * Math.PI;
@@ -59,8 +59,8 @@ export class RainbowRays {
   }
 
   public update() {
-    const mouseAngleX = (this.mousePos.x + 1) * Math.PI;
-    const mouseAngleY = (this.mousePos.y + 1) * Math.PI;
+    const mouseAngleX = this.mousePos.x * 0.25 * Math.PI;
+    const mouseAngleY = this.mousePos.y * 0.25 * Math.PI;
 
     this.rays.forEach((ray, index) => {
       const angle = this.initialAngles[index] + mouseAngleX;
