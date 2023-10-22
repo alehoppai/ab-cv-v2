@@ -19,6 +19,8 @@ export class MainScene {
 
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.z = 10;
+        this.camera.position.y = 5;
+        this.camera.rotateX(-0.5);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -44,6 +46,8 @@ export class MainScene {
     private init() {
         this.modelLoader.loadModel('/assets/cone_v1.glb', glft => {
             this.model = glft.scene;
+            this.model.position.y = 2;
+            this.model.position.z = 2;
             this.scene.add(this.model);
 
             const box = new THREE.Box3().setFromObject(this.model);
@@ -54,12 +58,23 @@ export class MainScene {
         this.scene.add(new AmbientLight());
         this.scene.add(new DirectionalLight());
 
+        // Grid
+        const size = 250;
+        const divisions = 500;
+        const gridHelper = new THREE.GridHelper(size, divisions);
+        this.scene.add(gridHelper);
+
         new DiagonalGradientBackground(this.scene);
         this.animate();
     }
 
     private animate() {
         requestAnimationFrame(() => this.animate());
+
+        // if (this.camera) {
+        //     this.camera.rotation.x = this.mousePosition.y * Math.PI * 0.5;
+        //     this.camera.rotation.y = this.mousePosition.x * Math.PI * 0.5;
+        // }
 
         if (this.model) {
             this.model.rotation.x = this.mousePosition.y * Math.PI * 0.5;
