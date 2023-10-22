@@ -1,10 +1,10 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export class DiagonalGradientBackground {
-    private material: THREE.ShaderMaterial;
+  private material: THREE.ShaderMaterial;
 
-    constructor(scene: THREE.Scene) {
-        const vertexShader = `
+  constructor(scene: THREE.Scene) {
+    const vertexShader = `
             varying vec2 vUv;
             void main() {
                 vUv = uv;
@@ -12,7 +12,7 @@ export class DiagonalGradientBackground {
             }
         `;
 
-        const fragmentShader = `
+    const fragmentShader = `
             varying vec2 vUv;
             uniform vec3 colors[5];
             
@@ -34,27 +34,26 @@ export class DiagonalGradientBackground {
             }
         `;
 
-        this.material = new THREE.ShaderMaterial({
-            vertexShader: vertexShader,
-            fragmentShader: fragmentShader,
-            uniforms: {
-                colors: { value: [
-                    new THREE.Color('#1a3659'),
-                    new THREE.Color('#152e50'),
-                    new THREE.Color('#0f2748'),
-                    new THREE.Color('#0a203f'),
-                    new THREE.Color('#051937')
-                ]}
-            }
-        });
+    this.material = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      uniforms: {
+        colors: {
+          value: [
+            new THREE.Color("#1a3659"),
+            new THREE.Color("#152e50"),
+            new THREE.Color("#0f2748"),
+            new THREE.Color("#0a203f"),
+            new THREE.Color("#051937"),
+          ],
+        },
+      },
+    });
 
-        const backgroundPlane = new THREE.Mesh(
-            new THREE.PlaneGeometry(2, 2, 1),
-            this.material
-        );
-        backgroundPlane.position.set(0, 0, -1);
-        backgroundPlane.scale.set(window.innerWidth, window.innerHeight, 1);
+    const backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2, 1), this.material);
+    backgroundPlane.position.set(0, 0, -1);
+    backgroundPlane.scale.set(window.innerWidth, window.innerHeight, 1);
 
-        scene.add(backgroundPlane);
-    }
+    scene.add(backgroundPlane);
+  }
 }

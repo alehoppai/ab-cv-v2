@@ -1,16 +1,15 @@
-import { GLTFLoader, GLTF } from 'three-stdlib';
+import { GLTFLoader, GLTF } from "three-stdlib";
 
 export class ModelLoader {
-    private loader: GLTFLoader;
+  private loader: GLTFLoader;
 
-    constructor() {
-        this.loader = new GLTFLoader();
-    }
+  constructor() {
+    this.loader = new GLTFLoader();
+  }
 
-    loadModel(url: string, onLoad: (gltf: GLTF) => void) {
-        this.loader.load(url, onLoad, undefined, (error) => {
-            console.error(error);
-        });
-    }
+  loadModel(url: string, onLoad: (gltf: GLTF) => void) {
+    this.loader.load(url, onLoad, undefined, (error) => {
+      console.error(error);
+    });
+  }
 }
-
