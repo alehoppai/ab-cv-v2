@@ -14,7 +14,7 @@ export class RainbowRays {
     private mousePos = { x: 0, y: 0 };
     private initialAngles: number[] = [];
 
-    constructor(scene: THREE.Scene, modelCenter: THREE.Vector3, numRays = 21, rayLength = 15) {
+    constructor(scene: THREE.Scene, modelCenter: THREE.Vector3, numRays = 21, rayLength = 35) {
         this.scene = scene;
         this.modelCenter = modelCenter;
         this.numRays = numRays;
@@ -25,7 +25,7 @@ export class RainbowRays {
     private init() {
         const rainbowColors = [
             0xFF0000, 0xFF7F00, 0xFFFF00, 0x00FF00, 0x0000FF, 0x4B0082, 0x9400D3
-        ].map(color => dimColor(color, 0.8));
+        ].map(color => dimColor(color, 0.2));
 
 
         for (let i = 0; i < this.numRays; i++) {

@@ -4,6 +4,7 @@ import { AmbientLight } from '../lights/Ambient';
 import { DirectionalLight } from '../lights/Directional';
 import { RainbowRays } from '../fx/RainbowRais';
 import { DiagonalGradientBackground } from '../Background';
+import { StarField } from '../StarField';
 
 export class MainScene {
     private scene: THREE.Scene;
@@ -13,6 +14,7 @@ export class MainScene {
     private modelLoader: ModelLoader;
     private rainbowRays: RainbowRays;
     private mousePosition = { x: 0, y: 0 };
+    private starField: StarField;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -40,6 +42,53 @@ export class MainScene {
                     y: this.mousePosition.y,
                 });
             }
+
+            if (this.starField) {
+                this.starField.updateMousePosition({
+                    x: this.mousePosition.x,
+                    y: this.mousePosition.y,
+                });
+            }
+        });
+
+        document.addEventListener('touchmove', (event) => {
+            this.mousePosition.x = event.touches[0].clientX / window.innerWidth * 2 - 1;
+            this.mousePosition.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+
+            if (this.rainbowRays) {
+                this.rainbowRays.updateMousePosition({
+                    x: this.mousePosition.x,
+                    y: this.mousePosition.y,
+                });
+            }
+
+            if (this.starField) {
+                this.starField.updateMousePosition({
+                    x: this.mousePosition.x,
+                    y: this.mousePosition.y,
+                });
+            }
+        });
+
+        document.addEventListener('keypress', (event) => {
+            switch (event.key) {
+                case 'a':
+                case 'A':
+                    this.camera.rotation.y += 0.1;
+                    break;
+                case 'd':
+                case 'D':
+                    this.camera.rotation.y -= 0.1;
+                    break;
+                case 'w':
+                case 'W':
+                    this.camera.rotation.x += 0.1;
+                    break;
+                case 's':
+                case 'S':
+                    this.camera.rotation.x -= 0.1;
+                    break;
+            }
         });
     }
 
@@ -53,6 +102,7 @@ export class MainScene {
             const box = new THREE.Box3().setFromObject(this.model);
             const modelCenter = box.getCenter(new THREE.Vector3());
             this.rainbowRays = new RainbowRays(this.scene, modelCenter);
+            this.starField = new StarField(this.scene, modelCenter, this.camera);
         });
 
         this.scene.add(new AmbientLight());
@@ -62,7 +112,16 @@ export class MainScene {
         const size = 250;
         const divisions = 500;
         const gridHelper = new THREE.GridHelper(size, divisions);
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.2;
         this.scene.add(gridHelper);
+
+        // Axis
+        // const axesHelper = new THREE.AxesHelper(10);
+        // axesHelper.position.y = -2;
+        // axesHelper.position.z = 1;
+        // axesHelper.position.x = -5;
+        // this.scene.add(axesHelper);
 
         new DiagonalGradientBackground(this.scene);
         this.animate();
@@ -71,11 +130,6 @@ export class MainScene {
     private animate() {
         requestAnimationFrame(() => this.animate());
 
-        // if (this.camera) {
-        //     this.camera.rotation.x = this.mousePosition.y * Math.PI * 0.5;
-        //     this.camera.rotation.y = this.mousePosition.x * Math.PI * 0.5;
-        // }
-
         if (this.model) {
             this.model.rotation.x = this.mousePosition.y * Math.PI * 0.5;
             this.model.rotation.y = this.mousePosition.x * Math.PI * 0.5;
@@ -83,6 +137,10 @@ export class MainScene {
 
         if (this.rainbowRays) {
             this.rainbowRays.update();
+        }
+
+        if (this.starField) {
+            this.starField.update();
         }
 
         this.renderer.render(this.scene, this.camera);
