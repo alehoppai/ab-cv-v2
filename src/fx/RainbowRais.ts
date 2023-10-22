@@ -1,7 +1,4 @@
 import * as THREE from "three";
-import { Line2 } from "three/examples/jsm/lines/Line2";
-import { LineGeometry } from "three/examples/jsm/lines/LineGeometry";
-import { LineMaterial } from "three/examples/jsm/lines/LineMaterial";
 import { dimColor } from "../utils/dimColor";
 
 export class RainbowRays {
@@ -18,6 +15,7 @@ export class RainbowRays {
     this.modelCenter = modelCenter;
     this.numRays = numRays;
     this.rayLength = rayLength;
+
     this.init();
   }
 
@@ -35,31 +33,32 @@ export class RainbowRays {
 
       const direction = new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0).normalize();
 
-      const positions = [
-        this.modelCenter.x,
-        this.modelCenter.y,
-        this.modelCenter.z,
-        this.modelCenter.x + direction.x * this.rayLength,
-        this.modelCenter.y + direction.y * this.rayLength,
-        this.modelCenter.z + direction.z * this.rayLength,
+      const startPos = this.modelCenter.clone();
+      const endPos = this.modelCenter.clone().add(direction.multiplyScalar(this.rayLength));
+
+      // Create custom geometry for the ray (trapezoid)
+      const rayGeometry = new THREE.BufferGeometry();
+      const vertices = [
+        // Base at the model center
+        startPos.x,
+        startPos.y,
+        startPos.z,
+        endPos.x,
+        endPos.y - 0.1,
+        endPos.z,
+        endPos.x,
+        endPos.y + 0.1,
+        endPos.z,
+        // ... You can add more vertices to define the larger base of the trapezoid
       ];
+      rayGeometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 
-      // Validate the positions
-      if (positions.some(Number.isNaN)) {
-        console.error("Invalid position detected:", positions);
-        continue; // Skip this iteration if invalid positions found
-      }
-
-      const rayGeometry = new LineGeometry();
-      rayGeometry.setPositions(positions);
-
-      const rayMaterial = new LineMaterial({
+      const rayMaterial = new THREE.MeshBasicMaterial({
         color: rainbowColors[i % rainbowColors.length],
-        linewidth: 2.5,
+        side: THREE.DoubleSide, // Render both sides of the geometry
       });
-      rayMaterial.resolution.set(window.innerWidth, window.innerHeight);
 
-      const ray = new Line2(rayGeometry, rayMaterial);
+      const ray = new THREE.Mesh(rayGeometry, rayMaterial);
       this.rays.push(ray);
       this.scene.add(ray);
     }
@@ -80,15 +79,21 @@ export class RainbowRays {
         Math.sin(angle + mouseAngleY),
         0,
       ).normalize();
-      const geometry = ray.geometry as LineGeometry;
-      geometry.setPositions([
-        this.modelCenter.x,
-        this.modelCenter.y,
-        this.modelCenter.z,
-        direction.x * this.rayLength,
-        direction.y * this.rayLength,
-        direction.z * this.rayLength,
-      ]);
+
+      // Set the new direction for the ray
+      const endPos = this.modelCenter.clone().add(direction.multiplyScalar(this.rayLength));
+      const geometry = ray.geometry as THREE.BufferGeometry;
+      const positions = geometry.attributes.position.array as Float32Array;
+
+      // Update positions for the ray based on new direction
+      positions[3] = endPos.x;
+      positions[4] = endPos.y - 0.1; // Adjust for the trapezoid shape
+      positions[5] = endPos.z;
+      positions[6] = endPos.x;
+      positions[7] = endPos.y + 0.1; // Adjust for the trapezoid shape
+      positions[8] = endPos.z;
+
+      geometry.attributes.position.needsUpdate = true; // Inform Three.js to update the geometry
     });
   }
 }
