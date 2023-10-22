@@ -13,7 +13,6 @@ export class MainScene {
     private modelLoader: ModelLoader;
     private rainbowRays: RainbowRays;
     private mousePosition = { x: 0, y: 0 };
-    private background: DiagonalGradientBackground;
 
     constructor() {
         this.scene = new THREE.Scene();
@@ -51,9 +50,11 @@ export class MainScene {
             const modelCenter = box.getCenter(new THREE.Vector3());
             this.rainbowRays = new RainbowRays(this.scene, modelCenter);
         });
+
         this.scene.add(new AmbientLight());
         this.scene.add(new DirectionalLight());
-        this.background = new DiagonalGradientBackground(this.scene);
+
+        new DiagonalGradientBackground(this.scene);
         this.animate();
     }
 
