@@ -27,24 +27,35 @@ export class RainbowRays {
     ].map((color) => dimColor(color, 0.3));
 
     for (let i = 0; i < this.numRays; i++) {
-      const angle = (i / this.numRays) * 2 * Math.PI;
+      let angle = (i / this.numRays) * 2 * Math.PI;
       this.initialAngles.push(angle);
 
-      const direction = new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0).normalize();
-      const rayGeometry = new LineGeometry();
+      // Adjust the angle based on the color for the prism effect
+      angle += (i - this.numRays / 2) * 0.005;
 
-      rayGeometry.setPositions([
+      const direction = new THREE.Vector3(Math.cos(angle), Math.sin(angle), 0).normalize();
+
+      const positions = [
         this.modelCenter.x,
         this.modelCenter.y,
         this.modelCenter.z,
-        direction.x * this.rayLength,
-        direction.y * this.rayLength,
-        direction.z * this.rayLength,
-      ]);
+        this.modelCenter.x + direction.x * this.rayLength,
+        this.modelCenter.y + direction.y * this.rayLength,
+        this.modelCenter.z + direction.z * this.rayLength,
+      ];
+
+      // Validate the positions
+      if (positions.some(Number.isNaN)) {
+        console.error("Invalid position detected:", positions);
+        continue; // Skip this iteration if invalid positions found
+      }
+
+      const rayGeometry = new LineGeometry();
+      rayGeometry.setPositions(positions);
 
       const rayMaterial = new LineMaterial({
         color: rainbowColors[i % rainbowColors.length],
-        linewidth: 2.5, // Adjust this value for desired thickness
+        linewidth: 2.5,
       });
       rayMaterial.resolution.set(window.innerWidth, window.innerHeight);
 
