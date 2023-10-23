@@ -7,10 +7,11 @@ import { DiagonalGradientBackground } from "../Background";
 import { StarField } from "../StarField";
 import { EventManager } from "../EventManger";
 import type { Coords2D } from "../types/common";
+import { MainCamera } from "../MainCamera";
 
 export class MainScene {
   private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+  private readonly mainCamera = new MainCamera();
   private renderer: THREE.WebGLRenderer;
   private model: THREE.Group;
   private modelLoader: ModelLoader;
@@ -19,16 +20,7 @@ export class MainScene {
 
   constructor() {
     this.scene = new THREE.Scene();
-
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    );
-    this.camera.position.z = 10;
-    this.camera.position.y = 5;
-    this.camera.rotateX(-0.5);
+    new MainCamera();
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -57,27 +49,6 @@ export class MainScene {
         y: this.mousePosition.y,
       });
     });
-
-    document.addEventListener("keypress", (event) => {
-      switch (event.key) {
-        case "a":
-        case "A":
-          this.camera.rotation.y += 0.1;
-          break;
-        case "d":
-        case "D":
-          this.camera.rotation.y -= 0.1;
-          break;
-        case "w":
-        case "W":
-          this.camera.rotation.x += 0.1;
-          break;
-        case "s":
-        case "S":
-          this.camera.rotation.x -= 0.1;
-          break;
-      }
-    });
   }
 
   private init() {
@@ -93,7 +64,7 @@ export class MainScene {
       // TODO: control Scene children.
       // FYI: this 2 should be "static" children
       new RainbowRays(this.scene, modelCenter);
-      new StarField(this.scene, modelCenter, this.camera);
+      new StarField(this.scene, modelCenter, this.mainCamera);
     });
 
     this.scene.add(new AmbientLight());
@@ -120,11 +91,11 @@ export class MainScene {
     }
 
     this.eventManager.publish("animUpdate", null);
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.mainCamera);
   }
 
   get Camera() {
-    return this.camera;
+    return this.mainCamera;
   }
 
   get Renderer() {
