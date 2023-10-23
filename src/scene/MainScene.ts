@@ -18,14 +18,10 @@ export class MainScene {
 
   constructor() {
     this.scene = new THREE.Scene();
-    new MainCamera();
-
-    Inputs.Instance;
-    this.init();
-
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+
+    this.init();
   }
 
   private async init() {
@@ -40,6 +36,10 @@ export class MainScene {
     this.scene.add(new DirectionalLight());
     this.scene.add(new Grid());
 
+    new MainCamera();
+    Inputs.Instance;
+
+    document.body.appendChild(this.renderer.domElement);
     this.animate();
   }
 
