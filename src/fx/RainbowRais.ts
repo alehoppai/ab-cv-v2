@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { dimColor } from "../utils/dimColor";
-import { EventManager } from "../events/EventManger";
+import { EventManager } from "../EventManger";
 import type { Coords2D } from "../types/common";
 
 export class RainbowRays {

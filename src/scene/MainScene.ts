@@ -5,7 +5,7 @@ import { DirectionalLight } from "../lights/Directional";
 import { RainbowRays } from "../fx/RainbowRais";
 import { DiagonalGradientBackground } from "../Background";
 import { StarField } from "../StarField";
-import { EventManager } from "../events/EventManger";
+import { EventManager } from "../EventManger";
 import type { Coords2D } from "../types/common";
 
 export class MainScene {
