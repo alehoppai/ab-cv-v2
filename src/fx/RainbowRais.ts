@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { dimColor } from "../utils/dimColor";
+import { EventManager } from "../events/EventManger";
+import type { Coords2D } from "../types/common";
 
 export class RainbowRays {
   private scene: THREE.Scene;
@@ -11,6 +13,7 @@ export class RainbowRays {
   private initialAngles: number[] = [];
   private readonly startModifier = 0.5;
   private readonly endModifier = 1;
+  private readonly eventManager = EventManager.getInstance();
 
   constructor(scene: THREE.Scene, modelCenter: THREE.Vector3, numRays = 21, rayLength = 35) {
     this.scene = scene;
@@ -18,6 +21,12 @@ export class RainbowRays {
     this.numRays = numRays;
     this.rayLength = rayLength;
 
+    this.eventManager.subscribe<Coords2D>("updateMousePos", (message) => {
+      this.updateMousePosition(message);
+    });
+    this.eventManager.subscribe("animUpdate", () => {
+      this.update();
+    });
     this.init();
   }
 
@@ -65,7 +74,7 @@ export class RainbowRays {
     }
   }
 
-  public updateMousePosition(mousePos: { x: number; y: number }) {
+  public updateMousePosition(mousePos: Coords2D) {
     this.mousePos = mousePos;
   }
 

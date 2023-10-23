@@ -5,6 +5,8 @@ import { DirectionalLight } from "../lights/Directional";
 import { RainbowRays } from "../fx/RainbowRais";
 import { DiagonalGradientBackground } from "../Background";
 import { StarField } from "../StarField";
+import { EventManager } from "../events/EventManger";
+import type { Coords2D } from "../types/common";
 
 export class MainScene {
   private scene: THREE.Scene;
@@ -12,9 +14,8 @@ export class MainScene {
   private renderer: THREE.WebGLRenderer;
   private model: THREE.Group;
   private modelLoader: ModelLoader;
-  private rainbowRays: RainbowRays;
   private mousePosition = { x: 0, y: 0 };
-  private starField: StarField;
+  private eventManager = EventManager.getInstance();
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -41,38 +42,20 @@ export class MainScene {
       this.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
       this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-      if (this.rainbowRays) {
-        this.rainbowRays.updateMousePosition({
-          x: this.mousePosition.x,
-          y: this.mousePosition.y,
-        });
-      }
-
-      if (this.starField) {
-        this.starField.updateMousePosition({
-          x: this.mousePosition.x,
-          y: this.mousePosition.y,
-        });
-      }
+      this.eventManager.publish<Coords2D>("updateMousePos", {
+        x: this.mousePosition.x,
+        y: this.mousePosition.y,
+      });
     });
 
     document.addEventListener("touchmove", (event) => {
       this.mousePosition.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
       this.mousePosition.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
 
-      if (this.rainbowRays) {
-        this.rainbowRays.updateMousePosition({
-          x: this.mousePosition.x,
-          y: this.mousePosition.y,
-        });
-      }
-
-      if (this.starField) {
-        this.starField.updateMousePosition({
-          x: this.mousePosition.x,
-          y: this.mousePosition.y,
-        });
-      }
+      this.eventManager.publish("updateMousePos", {
+        x: this.mousePosition.x,
+        y: this.mousePosition.y,
+      });
     });
 
     document.addEventListener("keypress", (event) => {
@@ -106,8 +89,11 @@ export class MainScene {
 
       const box = new THREE.Box3().setFromObject(this.model);
       const modelCenter = box.getCenter(new THREE.Vector3());
-      this.rainbowRays = new RainbowRays(this.scene, modelCenter);
-      this.starField = new StarField(this.scene, modelCenter, this.camera);
+
+      // TODO: control Scene children.
+      // FYI: this 2 should be "static" children
+      new RainbowRays(this.scene, modelCenter);
+      new StarField(this.scene, modelCenter, this.camera);
     });
 
     this.scene.add(new AmbientLight());
@@ -121,13 +107,6 @@ export class MainScene {
     gridHelper.material.opacity = 0.2;
     this.scene.add(gridHelper);
 
-    // Axis
-    // const axesHelper = new THREE.AxesHelper(10);
-    // axesHelper.position.y = -2;
-    // axesHelper.position.z = 1;
-    // axesHelper.position.x = -5;
-    // this.scene.add(axesHelper);
-
     new DiagonalGradientBackground(this.scene);
     this.animate();
   }
@@ -140,14 +119,7 @@ export class MainScene {
       this.model.rotation.y = this.mousePosition.x * Math.PI * 0.5;
     }
 
-    if (this.rainbowRays) {
-      this.rainbowRays.update();
-    }
-
-    if (this.starField) {
-      this.starField.update();
-    }
-
+    this.eventManager.publish("animUpdate", null);
     this.renderer.render(this.scene, this.camera);
   }
 

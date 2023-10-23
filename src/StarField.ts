@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import type { Coords2D } from "./types/common";
+import { EventManager } from "./events/EventManger";
 
 export class StarField {
   private scene: THREE.Scene;
@@ -10,6 +12,7 @@ export class StarField {
 
   private sphereRadius: number;
   private camera: THREE.Camera;
+  private readonly eventManager = EventManager.getInstance();
 
   constructor(
     scene: THREE.Scene,
@@ -25,6 +28,12 @@ export class StarField {
     // Calculate the sphere radius based on the distance from the camera to the model center
     this.sphereRadius = this.modelCenter.distanceTo(camera.position) * 0.8; // 80% of the distance
 
+    this.eventManager.subscribe<Coords2D>("updateMousePos", (message) => {
+      this.updateMousePosition(message);
+    });
+    this.eventManager.subscribe("animUpdate", () => {
+      this.update();
+    });
     this.generateStars();
   }
 
