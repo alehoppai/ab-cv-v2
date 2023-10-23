@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import type { Coords2D } from "./types/common";
-import { EventManager } from "./EventManger";
+import type { Coords2D } from "../types/common";
+import { EventManager } from "../EventManger";
 
 export class StarField {
   private scene: THREE.Scene;
