@@ -8,6 +8,7 @@ import { EventManager } from "../EventManger";
 import { MainCamera } from "../MainCamera";
 import { Inputs } from "../Inputs";
 import { getCCube } from "../models/CCube";
+import { Grid } from "../Grid";
 
 export class MainScene {
   private scene: THREE.Scene;
@@ -37,14 +38,7 @@ export class MainScene {
 
     this.scene.add(new AmbientLight());
     this.scene.add(new DirectionalLight());
-
-    // Grid
-    const size = 250;
-    const divisions = 500;
-    const gridHelper = new THREE.GridHelper(size, divisions);
-    gridHelper.material.transparent = true;
-    gridHelper.material.opacity = 0.2;
-    this.scene.add(gridHelper);
+    this.scene.add(new Grid());
 
     this.animate();
   }
