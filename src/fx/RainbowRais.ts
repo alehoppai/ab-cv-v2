@@ -13,7 +13,7 @@ export class RainbowRays {
   private initialAngles: number[] = [];
   private readonly startModifier = 0.5;
   private readonly endModifier = 1;
-  private readonly eventManager = EventManager.getInstance();
+  private readonly eventManager = EventManager.Instance;
 
   constructor(scene: THREE.Scene, modelCenter: THREE.Vector3, numRays = 21, rayLength = 35) {
     this.scene = scene;

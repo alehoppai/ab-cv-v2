@@ -7,12 +7,8 @@ export class EventManager {
 
   private eventListeners: Map<Events, EventListener<unknown>[]> = new Map();
 
-  public static getInstance(): EventManager {
-    if (!EventManager._instance) {
-      EventManager._instance = new EventManager();
-    }
-
-    return EventManager._instance;
+  public static get Instance(): EventManager {
+    return this._instance || (this._instance = new this());
   }
 
   public subscribe<T>(type: Events, listener: EventListener<T>): void {

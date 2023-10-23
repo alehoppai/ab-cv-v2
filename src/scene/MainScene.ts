@@ -6,8 +6,8 @@ import { RainbowRays } from "../fx/RainbowRais";
 import { DiagonalGradientBackground } from "../Background";
 import { StarField } from "../StarField";
 import { EventManager } from "../EventManger";
-import type { Coords2D } from "../types/common";
 import { MainCamera } from "../MainCamera";
+import { Inputs } from "../Inputs";
 
 export class MainScene {
   private scene: THREE.Scene;
@@ -16,7 +16,7 @@ export class MainScene {
   private model: THREE.Group;
   private modelLoader: ModelLoader;
   private mousePosition = { x: 0, y: 0 };
-  private eventManager = EventManager.getInstance();
+  private eventManager = EventManager.Instance;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -28,27 +28,8 @@ export class MainScene {
     document.body.appendChild(this.renderer.domElement);
 
     this.modelLoader = new ModelLoader();
+    Inputs.Instance;
     this.init();
-
-    document.addEventListener("mousemove", (event) => {
-      this.mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      this.eventManager.publish<Coords2D>("updateMousePos", {
-        x: this.mousePosition.x,
-        y: this.mousePosition.y,
-      });
-    });
-
-    document.addEventListener("touchmove", (event) => {
-      this.mousePosition.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-      this.mousePosition.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
-
-      this.eventManager.publish("updateMousePos", {
-        x: this.mousePosition.x,
-        y: this.mousePosition.y,
-      });
-    });
   }
 
   private init() {

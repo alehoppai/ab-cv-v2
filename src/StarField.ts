@@ -12,7 +12,7 @@ export class StarField {
 
   private sphereRadius: number;
   private camera: THREE.Camera;
-  private readonly eventManager = EventManager.getInstance();
+  private readonly eventManager = EventManager.Instance;
 
   constructor(
     scene: THREE.Scene,
